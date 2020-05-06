@@ -96,3 +96,10 @@ Prepare database tables and some initial dummy data
 
 **NOTES:**
 - The project won't create the database for you, this has to be done manually before you can access it.
+
+### Run
+The import process may be run manually by executing the command
+    
+    ./yii import/run
+    
+or by setting up a cron job for the above mentioned script to run every minute.
