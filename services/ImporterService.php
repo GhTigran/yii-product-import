@@ -4,6 +4,7 @@
 namespace app\services;
 
 
+use app\exceptions\RowImportException;
 use app\models\ProductImportRow;
 use app\models\StoreProduct;
 
@@ -11,7 +12,15 @@ class ImporterService
 {
     const UPC_FIELD = 'upc';
 
-    public function importRow($importId, int $rowNumber, int $storeId, array $dataRow) {
+    /**
+     * @param int $importId
+     * @param int $rowNumber
+     * @param int $storeId
+     * @param array $dataRow
+     *
+     * throws \RuntimeException
+     */
+    public function importRow(int $importId, int $rowNumber, int $storeId, array $dataRow) {
         $importRow = ProductImportRow::findOne([
             'import_id'  => $importId,
             'row_number' => $rowNumber,
@@ -49,9 +58,9 @@ class ImporterService
 
             $importRow->status = ProductImportRow::STATUS_SUCCESS;
         } catch (\RuntimeException $e) {
-            throw new \RowImportException($e->getMessage());
+            throw new RowImportException($e->getMessage());
         } catch (\Throwable $e) {
-            throw new \RowImportException('Unprocessable Row ' . $rowNumber);
+            throw new RowImportException('Unprocessable Row ' . $rowNumber);
         } finally {
             $importRow->save();
         }

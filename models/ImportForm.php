@@ -20,7 +20,7 @@ class ImportForm extends Model
 
     public function rules() {
         return [
-            [['importFile'], 'file', 'skipOnEmpty' => false],
+            [['importFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'csv, xlsx', 'maxSize'=>5242880, 'checkExtensionByMimeType' => false],
             [['storeId'], 'integer', 'skipOnEmpty' => false],
         ];
     }

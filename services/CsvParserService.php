@@ -15,7 +15,9 @@ class CsvParserService
         while (($data = fgetcsv($fileHandle, 1000, ",")) !== FALSE) {
             $dataRow = [];
             foreach ($header as $key => $field) {
-                $dataRow[$field] = $data[$key] ?? "";
+                if (array_key_exists($key, $data)) {
+                    $dataRow[$field] = $data[$key];
+                }
             }
 
             yield $dataRow;

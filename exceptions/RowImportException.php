@@ -1,6 +1,6 @@
 <?php
+namespace app\exceptions;
 
-
-class RowImportException extends RuntimeException
+class RowImportException extends \RuntimeException
 {
 }

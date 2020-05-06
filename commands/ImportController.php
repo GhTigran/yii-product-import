@@ -2,9 +2,8 @@
 
 namespace app\commands;
 
+use app\exceptions\RowImportException;
 use app\models\ProductImport;
-use app\models\ProductImportRow;
-use app\models\StoreProduct;
 use app\services\FileParserFactory;
 use app\services\ImporterService;
 use \yii\helpers\Console;
@@ -71,13 +70,13 @@ class ImportController extends \yii\console\Controller
 
         if (($handle = fopen($fileName, "r")) !== FALSE) {
             try {
-                $row = 1;
+                $row = 0;
                 foreach ($parser->parse($handle) as $dataRow) {
                     try {
+                        $row++;
                         $importService->importRow($importId, $row, $productImport->store_id, $dataRow);
                         $this->stdout('Row successfully imported ' . $row . PHP_EOL, Console::FG_GREEN);
-                        $row++;
-                    } catch (\RowImportException $e) {
+                    } catch (RowImportException $e) {
                         $this->stderr($e->getMessage() . PHP_EOL, Console::FG_RED);
                     }
                 }
@@ -87,7 +86,7 @@ class ImportController extends \yii\console\Controller
                 $this->stderr($e->getMessage(), Console::FG_RED);
                 exit($e->getCode());
             } catch (\Throwable $e) {
-                $this->stderr($e->getMessage(), Console::FG_RED);
+                $this->stderr('Failed to parse the file', Console::FG_RED);
                 exit(-1);
             } finally {
                 fclose($handle);
